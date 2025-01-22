@@ -79,12 +79,11 @@ export default function Home() {
             <h2 className="text-xl font-bold mb-2">Your shortened URL:</h2>
             <div className="flex items-center gap-4">
               <a 
-                href={shortUrl} 
+                href={`${process.env.NEXT_PUBLIC_APP_URL}/${shortUrl.split('/').pop()}`} 
                 className="text-blue-600 hover:underline"
                 target="_blank"
-                rel="noopener noreferrer"
               >
-                {shortUrl}
+                {process.env.NEXT_PUBLIC_APP_URL}/{shortUrl.split('/').pop()}
               </a>
               <button
                 onClick={copyToClipboard}

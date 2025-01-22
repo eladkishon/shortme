@@ -29,7 +29,7 @@ export function UserUrls() {
   };
 
   const copyToClipboard = async (slug: string, id: number) => {
-    const shortUrl = `${process.env.NEXT_PUBLIC_APP_URL}/${slug}`;
+    const shortUrl = slug;
     try {
       await navigator.clipboard.writeText(shortUrl);
       setCopiedId(id);
@@ -78,7 +78,7 @@ export function UserUrls() {
             <p className="text-gray-600">Original: {url.originalUrl}</p>
             <p className="text-blue-600">
               Short: <a 
-                href={`${process.env.NEXT_PUBLIC_APP_URL}/${url.slug}`}
+                href={`/${url.slug}`}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="hover:underline"
