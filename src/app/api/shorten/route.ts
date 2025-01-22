@@ -1,4 +1,4 @@
-import { NextRequest } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
 import { db } from '@/lib/db';
 import { urls } from '@/lib/db/schema';
@@ -8,7 +8,7 @@ const requestSchema = z.object({
   url: z.string().url(),
 });
 
-export async function POST(request: NextRequest) {
+export async function POST(request: NextRequest, response: NextResponse) {
   try {
     const body = await request.json();
     const { url } = requestSchema.parse(body);
@@ -22,11 +22,12 @@ export async function POST(request: NextRequest) {
 
     const shortUrl = `${process.env.NEXT_PUBLIC_APP_URL}/${slug}`;
 
-    return NextRequest.json({ shortUrl });
+    return NextResponse.json({ shortUrl });
   } catch (error) {
+    console.error(error);
     if (error instanceof z.ZodError) {
-      return NextRequest.json({ error: 'Invalid URL provided' }, { status: 400 });
+      return NextResponse.json({ error: 'Invalid URL provided' }, { status: 400 });
     }
-    return NextRequest.json({ error: 'Internal server error' }, { status: 500 });
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 } 

@@ -1,4 +1,4 @@
-import { NextRequest } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/lib/db';
 import { urls } from '@/lib/db/schema';
 import { eq } from 'drizzle-orm';
@@ -13,7 +13,7 @@ export async function GET(
     });
 
     if (!url) {
-      return NextRequest.redirect(new URL('/404', request.url));
+      return NextResponse.redirect(new URL('/', request.url));
     }
 
     // Increment visit count
@@ -22,8 +22,15 @@ export async function GET(
       .set({ visits: url.visits + 1 })
       .where(eq(urls.slug, params.slug));
 
-    return NextRequest.redirect(url.originalUrl);
+    // Make sure the URL starts with http:// or https://
+    const redirectUrl = url.originalUrl.startsWith('http') 
+      ? url.originalUrl 
+      : `https://${url.originalUrl}`;
+
+    return NextResponse.redirect(redirectUrl);
   } catch (error) {
-    return NextRequest.redirect(new URL('/404', request.url));
+    console.error('Error in slug route:', error);
+    // Redirect to home page on error
+    return NextResponse.redirect(new URL('/', request.url));
   }
 } 

@@ -14,6 +14,9 @@ importers:
       '@supabase/supabase-js':
         specifier: ^2.39.7
         version: 2.48.0
+      dotenv:
+        specifier: ^16.4.7
+        version: 16.4.7
       drizzle-kit:
         specifier: ^0.20.14
         version: 0.20.18
@@ -1152,6 +1155,10 @@ packages:
 
   dot-case@3.0.4:
     resolution: {integrity: sha512-Kv5nKlh6yRrdrGvxeJ2e5y2eRUpkUosIW4A2AS38zwSz27zu7ufDwQPi5Jhs3XAlGNetl3bmnGhQsMtkKJnj3w==}
+
+  dotenv@16.4.7:
+    resolution: {integrity: sha512-47qPchRCykZC03FhkYAhrvwU4xDBFIj1QPqaarj6mdM/hgUzfPHcpkHJOn3mJAufFeeAxAzeGsr5X0M4k6fLZQ==}
+    engines: {node: '>=12'}
 
   dreamopt@0.8.0:
     resolution: {integrity: sha512-vyJTp8+mC+G+5dfgsY+r3ckxlz+QMX40VjPQsZc5gxVAxLmi64TBoVkP54A/pRAXMXsbu2GMMBrZPxNv23waMg==}
@@ -3546,6 +3553,8 @@ snapshots:
     dependencies:
       no-case: 3.0.4
       tslib: 2.4.1
+
+  dotenv@16.4.7: {}
 
   dreamopt@0.8.0:
     dependencies:
