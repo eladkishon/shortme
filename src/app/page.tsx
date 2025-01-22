@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { z } from 'zod';
 import { useUser } from "@clerk/nextjs";
 import { UserUrls } from '@/components/UserUrls';
+import { ClipboardIcon, ClipboardDocumentCheckIcon } from '@heroicons/react/24/outline';
 
 const urlSchema = z.string().url();
 
@@ -12,6 +13,7 @@ export default function Home() {
   const [error, setError] = useState('');
   const [shortUrl, setShortUrl] = useState('');
   const { isSignedIn } = useUser();
+  const [copied, setCopied] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -45,6 +47,16 @@ export default function Home() {
     }
   };
 
+  const copyToClipboard = async () => {
+    try {
+      await navigator.clipboard.writeText(shortUrl);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000); // Reset after 2 seconds
+    } catch (err) {
+      console.error('Failed to copy:', err);
+    }
+  };
+
   return (
     <main className="container">
       <div className="max-w-2xl mx-auto">
@@ -65,9 +77,32 @@ export default function Home() {
         {shortUrl && (
           <div className="mt-8">
             <h2 className="text-xl font-bold mb-2">Your shortened URL:</h2>
-            <a href={shortUrl} className="text-blue-600 hover:underline">
-              {shortUrl}
-            </a>
+            <div className="flex items-center gap-4">
+              <a 
+                href={shortUrl} 
+                className="text-blue-600 hover:underline"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                {shortUrl}
+              </a>
+              <button
+                onClick={copyToClipboard}
+                className="px-3 py-1 text-sm bg-gray-100 rounded hover:bg-gray-200 flex items-center gap-2"
+              >
+                {copied ? (
+                  <>
+                    <ClipboardDocumentCheckIcon className="h-4 w-4 text-green-600" />
+                    Copied!
+                  </>
+                ) : (
+                  <>
+                    <ClipboardIcon className="h-4 w-4" />
+                    Copy URL
+                  </>
+                )}
+              </button>
+            </div>
           </div>
         )}
 
