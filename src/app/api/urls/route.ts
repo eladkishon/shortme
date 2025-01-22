@@ -3,9 +3,14 @@ import { auth } from "@clerk/nextjs";
 import { db } from '@/lib/db';
 import { urls } from '@/lib/db/schema';
 import { eq } from 'drizzle-orm';
+import { rateLimit } from '@/lib/rateLimit';
 
 export async function GET(request: NextRequest) {
   try {
+    // Check rate limit
+    const rateLimitResult = await rateLimit(request);
+    if (rateLimitResult) return rateLimitResult;
+
     const { userId } = auth();
     
     if (!userId) {

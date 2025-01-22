@@ -5,6 +5,7 @@ import { urls } from '@/lib/db/schema';
 import base62 from '@/lib/utils/base62';
 import { eq } from 'drizzle-orm';
 import { auth } from "@clerk/nextjs";
+import { rateLimit } from '@/lib/rateLimit';
 
 const requestSchema = z.object({
   url: z.string().url(),
@@ -12,6 +13,10 @@ const requestSchema = z.object({
 
 export async function POST(request: NextRequest) {
   try {
+    // Check rate limit
+    const rateLimitResult = await rateLimit(request);
+    if (rateLimitResult) return rateLimitResult;
+
     const { userId } = auth();
     const body = await request.json();
     const { url } = requestSchema.parse(body);
