@@ -2,23 +2,35 @@ import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
 import { db } from '@/lib/db';
 import { urls } from '@/lib/db/schema';
-import { nanoid } from 'nanoid';
+import base62 from '@/lib/utils/base62';
+import { eq } from 'drizzle-orm';
 
 const requestSchema = z.object({
   url: z.string().url(),
 });
 
-export async function POST(request: NextRequest, response: NextResponse) {
+export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
     const { url } = requestSchema.parse(body);
 
-    const slug = nanoid(6); // Generate a random 6-character slug
-    
-    await db.insert(urls).values({
-      originalUrl: url,
-      slug,
-    });
+    // First insert with a temporary slug
+    const [result] = await db
+      .insert(urls)
+      .values({
+        originalUrl: url,
+        slug: 'temp', // Temporary slug
+      })
+      .returning({ insertedId: urls.id });
+
+    // Generate the base62 slug from the ID
+    const slug = base62.encode(result.insertedId);
+
+    // Update the record with the actual slug
+    await db
+      .update(urls)
+      .set({ slug })
+      .where(eq(urls.id, result.insertedId));
 
     const shortUrl = `${process.env.NEXT_PUBLIC_APP_URL}/${slug}`;
 

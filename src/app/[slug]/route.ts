@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/lib/db';
 import { urls } from '@/lib/db/schema';
 import { eq } from 'drizzle-orm';
+import base62 from '@/lib/utils/base62';
 
 export async function GET(
   request: NextRequest,
@@ -9,8 +10,10 @@ export async function GET(
 ) {
   try {
     const url = await db.query.urls.findFirst({
-      where: eq(urls.slug, params.slug),
+      where: eq(urls.id, base62.decode(params.slug)),
     });
+
+    console.log('Redirecting to:', url?.originalUrl);
 
     if (!url) {
       return NextResponse.redirect(new URL('/', request.url));
@@ -22,12 +25,8 @@ export async function GET(
       .set({ visits: url.visits + 1 })
       .where(eq(urls.slug, params.slug));
 
-    // Make sure the URL starts with http:// or https://
-    const redirectUrl = url.originalUrl.startsWith('http') 
-      ? url.originalUrl 
-      : `https://${url.originalUrl}`;
 
-    return NextResponse.redirect(redirectUrl);
+    return NextResponse.redirect(url.originalUrl);
   } catch (error) {
     console.error('Error in slug route:', error);
     // Redirect to home page on error
