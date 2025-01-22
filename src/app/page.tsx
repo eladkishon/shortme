@@ -37,6 +37,11 @@ export default function Home() {
       if (!response.ok) {
         if (response.status === 409) {
           setShortUrl(data.shortUrl);
+          setError('You have already shortened this URL');
+          return;
+        }
+        if (response.status === 429) {
+          setError('Too many requests. Please try again later.');
           return;
         }
         throw new Error(data.error);
@@ -48,7 +53,8 @@ export default function Home() {
     } catch (err) {
       if (err instanceof z.ZodError) {
         setError('Please enter a valid URL');
-      } else {
+      } 
+      else {
         setError('Something went wrong. Please try again.');
       }
     }
