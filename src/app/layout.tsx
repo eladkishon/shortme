@@ -1,4 +1,5 @@
-import { ClerkProvider } from '@clerk/nextjs'
+import { Providers } from './providers'
+import { Navigation } from '@/components/Navigation'
 import './globals.css'
 import { Inter } from 'next/font/google'
 
@@ -15,10 +16,13 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <ClerkProvider>
-      <html lang="en">
-        <body className={inter.className}>{children}</body>
-      </html>
-    </ClerkProvider>
+    <html lang="en">
+      <body>
+        <Providers>
+          <Navigation />
+          {children}
+        </Providers>
+      </body>
+    </html>
   )
 } 

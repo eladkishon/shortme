@@ -7,11 +7,10 @@ import base62 from '@/lib/utils/base62';
 export async function GET(
   request: NextRequest,
   _ : NextResponse,
-  { params }: { params: { slug: string } }
 ) {
   try {
     const url = await db.query.urls.findFirst({
-      where: eq(urls.id, base62.decode(params.slug)),
+      where: eq(urls.id, base62.decode(request.nextUrl.pathname.split('/').pop() || '')),
     });
 
     console.log('Redirecting to:', url?.originalUrl);
@@ -24,7 +23,7 @@ export async function GET(
     await db
       .update(urls)
       .set({ visits: url.visits + 1 })
-      .where(eq(urls.slug, params.slug));
+      .where(eq(urls.id, url.id));
 
 
     return NextResponse.redirect(url.originalUrl);

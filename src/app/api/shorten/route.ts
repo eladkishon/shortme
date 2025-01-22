@@ -4,6 +4,7 @@ import { db } from '@/lib/db';
 import { urls } from '@/lib/db/schema';
 import base62 from '@/lib/utils/base62';
 import { eq } from 'drizzle-orm';
+import { auth } from "@clerk/nextjs";
 
 const requestSchema = z.object({
   url: z.string().url(),
@@ -11,6 +12,7 @@ const requestSchema = z.object({
 
 export async function POST(request: NextRequest) {
   try {
+    const { userId } = auth();
     const body = await request.json();
     const { url } = requestSchema.parse(body);
 
@@ -20,6 +22,7 @@ export async function POST(request: NextRequest) {
       .values({
         originalUrl: url,
         slug: 'temp', // Temporary slug
+        userId: userId || null, // Store userId if authenticated
       })
       .returning({ insertedId: urls.id });
 
