@@ -1,0 +1,15 @@
+version: "3.8"
+
+services:
+  app:
+    build: .
+    ports:
+      - "3000:3000"  # Expose port 3000 on the container to port 3000 on the host
+    env_file:
+      - .env.local  # Load environment variables from your local .env file
+    networks:
+      - nextjs-network
+
+networks:
+  nextjs-network:
+    driver: bridge
