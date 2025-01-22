@@ -15,11 +15,6 @@ const requestSchema = z.object({
 export async function POST(request: NextRequest) {
   try {
     // Check rate limit
-    const rateLimitResult = await rateLimit(request);
-    if (rateLimitResult) {
-      logger.warn({ ip: request.headers.get('x-forwarded-for') }, 'Rate limit exceeded');
-      return rateLimitResult;
-    }
 
     const { userId } = auth();
     const body = await request.json();

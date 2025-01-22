@@ -23,8 +23,6 @@
     "drizzle-orm": "^0.29.3",
     "nanoid": "^5.0.6",
     "next": "15.1.1",
-    "pino": "^9.6.0",
-    "pino-pretty": "^13.0.0",
     "postgres": "^3.4.3",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
