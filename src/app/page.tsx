@@ -71,45 +71,49 @@ export default function Home() {
   };
 
   return (
-    <main className="container">
+    <main className="container mx-auto px-4 py-8 sm:px-6 lg:px-8">
       <div className="max-w-2xl mx-auto">
-        <h1 className="text-4xl font-bold mb-8">URL Shortener</h1>
-        <form onSubmit={handleSubmit}>
+        <h1 className="text-3xl sm:text-4xl font-bold mb-6 sm:mb-8">URL Shortener</h1>
+        <form onSubmit={handleSubmit} className="space-y-4">
           <input
             type="text"
             value={url}
             onChange={(e) => setUrl(e.target.value)}
             placeholder="Enter your URL here"
-            className="form-input"
+            className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
           />
-          {error && <p className="error">{error}</p>}
-          <button type="submit" className="button">
+          {error && <p className="text-red-500 text-sm">{error}</p>}
+          <button 
+            type="submit" 
+            className="w-full sm:w-auto px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+          >
             Shorten URL
           </button>
         </form>
+
         {shortUrl && (
-          <div className="mt-8">
-            <h2 className="text-xl font-bold mb-2">Your shortened URL:</h2>
-            <div className="flex items-center gap-4">
+          <div className="mt-6 sm:mt-8">
+            <h2 className="text-lg sm:text-xl font-bold mb-2">Your shortened URL:</h2>
+            <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-4">
               <a 
                 href={`${process.env.NEXT_PUBLIC_APP_URL}/${shortUrl.split('/').pop()}`} 
-                className="text-blue-600 hover:underline"
+                className="text-blue-600 hover:underline break-all"
                 target="_blank"
               >
                 {process.env.NEXT_PUBLIC_APP_URL}/{shortUrl.split('/').pop()}
               </a>
               <button
                 onClick={copyToClipboard}
-                className="px-3 py-1 text-sm bg-gray-100 rounded hover:bg-gray-200 flex items-center gap-2"
+                className="inline-flex items-center px-3 py-1 text-sm bg-gray-100 rounded hover:bg-gray-200 transition-colors"
               >
                 {copied ? (
                   <>
-                    <ClipboardDocumentCheckIcon className="h-4 w-4 text-green-600" />
+                    <ClipboardDocumentCheckIcon className="h-4 w-4 text-green-600 mr-2" />
                     Copied!
                   </>
                 ) : (
                   <>
-                    <ClipboardIcon className="h-4 w-4" />
+                    <ClipboardIcon className="h-4 w-4 mr-2" />
                     Copy URL
                   </>
                 )}
@@ -120,9 +124,9 @@ export default function Home() {
 
         {isSignedIn && (
           <>
-            <div className="my-12 border-t border-gray-200" />
+            <div className="my-8 sm:my-12 border-t border-gray-200" />
             <div className="mb-8">
-              <h2 className="text-2xl font-bold mb-4">Your Shortened URLs</h2>
+              <h2 className="text-xl sm:text-2xl font-bold mb-4">Your Shortened URLs</h2>
               <UserUrls refreshTrigger={refreshTrigger} />
             </div>
           </>
