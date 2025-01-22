@@ -6,7 +6,7 @@ import base62 from '@/lib/utils/base62';
 
 export async function GET(
   request: NextRequest,
-  _ : NextResponse,
+  { params }: { params: Promise<{ slug: string }> }
 ) {
   try {
     const url = await db.query.urls.findFirst({
@@ -24,7 +24,6 @@ export async function GET(
       .update(urls)
       .set({ visits: url.visits + 1 })
       .where(eq(urls.id, url.id));
-
 
     return NextResponse.redirect(url.originalUrl);
   } catch (error) {

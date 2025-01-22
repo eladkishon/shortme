@@ -11,7 +11,7 @@ const ratelimit = new Ratelimit({
 });
 
 export async function rateLimit(request: NextRequest) {
-  const ip = request.ip ?? "127.0.0.1";
+  const ip = request.headers.get('x-forwarded-for') ?? "127.0.0.1";
   const { success, pending, limit, reset, remaining } = await ratelimit.limit(
     `ratelimit_${ip}`
   );
