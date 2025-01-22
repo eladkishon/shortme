@@ -6,6 +6,7 @@ import base62 from '@/lib/utils/base62';
 
 export async function GET(
   request: NextRequest,
+  _ : NextResponse,
   { params }: { params: { slug: string } }
 ) {
   try {
