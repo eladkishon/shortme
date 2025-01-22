@@ -8,6 +8,7 @@ const RATE_LIMIT_PATHS = ['/api/shorten']
 // Clerk's auth middleware with public routes
 export default async function middleware(request: NextRequest) {
   // Handle Clerk Authentication Middleware
+  //@ts-ignore
   const response = authMiddleware({
     publicRoutes: ["/", "/:slug", "/api/shorten"]
   })(request);
