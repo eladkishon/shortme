@@ -14,6 +14,7 @@ export default function Home() {
   const [shortUrl, setShortUrl] = useState('');
   const { isSignedIn } = useUser();
   const [copied, setCopied] = useState(false);
+  const [refreshTrigger, setRefreshTrigger] = useState(0);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -42,6 +43,8 @@ export default function Home() {
       }
 
       setShortUrl(data.shortUrl);
+      // Trigger refresh of URLs list
+      setRefreshTrigger(prev => prev + 1);
     } catch (err) {
       if (err instanceof z.ZodError) {
         setError('Please enter a valid URL');
@@ -114,7 +117,7 @@ export default function Home() {
             <div className="my-12 border-t border-gray-200" />
             <div className="mb-8">
               <h2 className="text-2xl font-bold mb-4">Your Shortened URLs</h2>
-              <UserUrls />
+              <UserUrls refreshTrigger={refreshTrigger} />
             </div>
           </>
         )}

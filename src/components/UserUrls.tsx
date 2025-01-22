@@ -5,14 +5,17 @@ import { Url } from '@/lib/db/schema';
 import { formatDistanceToNow } from 'date-fns';
 import { ClipboardIcon, ClipboardDocumentCheckIcon } from '@heroicons/react/24/outline';
 
-export function UserUrls() {
+interface UserUrlsProps {
+  refreshTrigger: number;
+}
+
+export function UserUrls({ refreshTrigger }: UserUrlsProps) {
   const [urls, setUrls] = useState<Url[]>([]);
   const [loading, setLoading] = useState(true);
   const [copiedId, setCopiedId] = useState<number | null>(null);
 
-  useEffect(() => {
-    fetchUrls();
-  }, []);
+
+  console.log(refreshTrigger);
 
   const fetchUrls = async () => {
     try {
@@ -27,6 +30,10 @@ export function UserUrls() {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    fetchUrls();
+  }, [refreshTrigger]); // Refetch when refreshTrigger changes
 
   const copyToClipboard = async (slug: string, id: number) => {
     const shortUrl = slug;
