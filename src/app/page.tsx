@@ -34,6 +34,10 @@ export default function Home() {
       const data = await response.json();
       
       if (!response.ok) {
+        if (response.status === 409) {
+          setShortUrl(data.shortUrl);
+          return;
+        }
         throw new Error(data.error);
       }
 
