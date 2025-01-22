@@ -71,66 +71,95 @@ export default function Home() {
   };
 
   return (
-    <main className="container mx-auto px-4 py-8 sm:px-6 lg:px-8">
-      <div className="max-w-2xl mx-auto">
-        <h1 className="text-3xl sm:text-4xl font-bold mb-6 sm:mb-8">URL Shortener</h1>
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <input
-            type="text"
-            value={url}
-            onChange={(e) => setUrl(e.target.value)}
-            placeholder="Enter your URL here"
-            className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-          />
-          {error && <p className="text-red-500 text-sm">{error}</p>}
-          <button 
-            type="submit" 
-            className="w-full sm:w-auto px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
-          >
-            Shorten URL
-          </button>
-        </form>
-
-        {shortUrl && (
-          <div className="mt-6 sm:mt-8">
-            <h2 className="text-lg sm:text-xl font-bold mb-2">Your shortened URL:</h2>
-            <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-4">
-              <a 
-                href={`${process.env.NEXT_PUBLIC_APP_URL}/${shortUrl.split('/').pop()}`} 
-                className="text-blue-600 hover:underline break-all"
-                target="_blank"
-              >
-                {process.env.NEXT_PUBLIC_APP_URL}/{shortUrl.split('/').pop()}
-              </a>
-              <button
-                onClick={copyToClipboard}
-                className="inline-flex items-center px-3 py-1 text-sm bg-gray-100 rounded hover:bg-gray-200 transition-colors"
-              >
-                {copied ? (
-                  <>
-                    <ClipboardDocumentCheckIcon className="h-4 w-4 text-green-600 mr-2" />
-                    Copied!
-                  </>
-                ) : (
-                  <>
-                    <ClipboardIcon className="h-4 w-4 mr-2" />
-                    Copy URL
-                  </>
-                )}
-              </button>
-            </div>
+    <main className="min-h-screen bg-gradient-to-b from-gray-50 to-white">
+      <div className="container mx-auto px-4 py-12 sm:px-6 lg:px-8">
+        <div className="max-w-2xl mx-auto">
+          <div className="text-center mb-12">
+            <h1 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">
+              URL Shortener
+            </h1>
+            <p className="text-gray-600">
+              Create short, memorable links in seconds
+            </p>
           </div>
-        )}
 
-        {isSignedIn && (
-          <>
-            <div className="my-8 sm:my-12 border-t border-gray-200" />
-            <div className="mb-8">
-              <h2 className="text-xl sm:text-2xl font-bold mb-4">Your Shortened URLs</h2>
-              <UserUrls refreshTrigger={refreshTrigger} />
+          <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 mb-8">
+            <form onSubmit={handleSubmit} className="space-y-4">
+              <div className="relative">
+                <input
+                  type="text"
+                  value={url}
+                  onChange={(e) => setUrl(e.target.value)}
+                  placeholder="Enter your URL here"
+                  className="w-full px-4 py-3 rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent placeholder-gray-400 transition-all"
+                />
+              </div>
+              {error && (
+                <p className="text-red-500 text-sm flex items-center gap-2">
+                  <span className="inline-block w-1 h-1 rounded-full bg-red-500" />
+                  {error}
+                </p>
+              )}
+              <button 
+                type="submit" 
+                className="w-full sm:w-auto px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-all duration-200 font-medium shadow-sm hover:shadow"
+              >
+                Shorten URL
+              </button>
+            </form>
+          </div>
+
+          {shortUrl && (
+            <div className="bg-blue-50 border border-blue-100 rounded-xl p-6 mb-8 animate-fade-in">
+              <h2 className="text-lg sm:text-xl font-bold mb-4 text-gray-900">
+                Your shortened URL is ready!
+              </h2>
+              <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3">
+                <a 
+                  href={`${process.env.NEXT_PUBLIC_APP_URL}/${shortUrl.split('/').pop()}`} 
+                  className="text-blue-600 hover:text-blue-700 break-all font-medium"
+                  target="_blank"
+                >
+                  {process.env.NEXT_PUBLIC_APP_URL}/{shortUrl.split('/').pop()}
+                </a>
+                <button
+                  onClick={copyToClipboard}
+                  className="inline-flex items-center px-4 py-2 text-sm bg-white border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors shadow-sm"
+                >
+                  {copied ? (
+                    <>
+                      <ClipboardDocumentCheckIcon className="h-4 w-4 text-green-600 mr-2" />
+                      <span className="text-green-600">Copied!</span>
+                    </>
+                  ) : (
+                    <>
+                      <ClipboardIcon className="h-4 w-4 text-gray-600 mr-2" />
+                      <span>Copy URL</span>
+                    </>
+                  )}
+                </button>
+              </div>
             </div>
-          </>
-        )}
+          )}
+
+          {isSignedIn && (
+            <>
+              <div className="relative my-12">
+                <div className="absolute inset-0 flex items-center">
+                  <div className="w-full border-t border-gray-200"></div>
+                </div>
+                <div className="relative flex justify-center">
+                  <span className="px-4 bg-gradient-to-b from-gray-50 to-white text-sm text-gray-500">
+                    Your URLs
+                  </span>
+                </div>
+              </div>
+              <div className="mb-8">
+                <UserUrls refreshTrigger={refreshTrigger} />
+              </div>
+            </>
+          )}
+        </div>
       </div>
     </main>
   );
