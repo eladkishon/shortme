@@ -6,6 +6,7 @@ import base62 from '@/lib/utils/base62';
 import { eq, and } from 'drizzle-orm';
 import { auth } from "@clerk/nextjs";
 import { rateLimit } from '@/lib/rateLimit';
+import logger from '@/lib/logger';
 
 const requestSchema = z.object({
   url: z.string().url(),
@@ -15,11 +16,16 @@ export async function POST(request: NextRequest) {
   try {
     // Check rate limit
     const rateLimitResult = await rateLimit(request);
-    if (rateLimitResult) return rateLimitResult;
+    if (rateLimitResult) {
+      logger.warn({ ip: request.headers.get('x-forwarded-for') }, 'Rate limit exceeded');
+      return rateLimitResult;
+    }
 
     const { userId } = auth();
     const body = await request.json();
     const { url } = requestSchema.parse(body);
+
+    logger.info({ userId, url }, 'Attempting to shorten URL');
 
     // Check if URL already exists for this user
     if (userId) {
@@ -31,6 +37,7 @@ export async function POST(request: NextRequest) {
       });
 
       if (existingUrl) {
+        logger.info({ userId, url, existingSlug: existingUrl.slug }, 'URL already exists for user');
         return NextResponse.json(
           { 
             error: 'You have already shortened this URL',
@@ -61,13 +68,16 @@ export async function POST(request: NextRequest) {
       .where(eq(urls.id, result.insertedId));
 
     const shortUrl = `${process.env.NEXT_PUBLIC_APP_URL}/${slug}`;
+    
+    logger.info({ userId, url, slug }, 'Successfully shortened URL');
 
     return NextResponse.json({ shortUrl });
   } catch (error) {
-    console.error(error);
     if (error instanceof z.ZodError) {
+      logger.warn({ error: error.errors }, 'Invalid URL provided');
       return NextResponse.json({ error: 'Invalid URL provided' }, { status: 400 });
     }
+    logger.error({ error }, 'Error shortening URL');
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 } 
